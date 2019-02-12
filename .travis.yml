@@ -44,4 +44,5 @@ before_script:
 
 script: pytest tests
 
-notifications: False
+notifications:
+  email: false
