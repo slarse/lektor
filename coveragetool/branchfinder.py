@@ -11,17 +11,6 @@ import ast
 import collections
 
 
-def function_identifier(function_name: str, filepath: str) -> str:
-    """Return a unique identifier for a function defined in the file at
-    filepath.
-
-    Args:
-        function_name: Name of the function.
-        filepath: Path to the file where the functino is defined.
-    """
-    return f"{function_name}@{os.path.abspath(filepath)}"
-
-
 class BranchFinder(ast.NodeVisitor):
     """Traverses the AST of a Python source file and finds all lines containing
     branch statements `if`, `while` and `for`. One instance of BranchFinder
