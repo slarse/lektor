@@ -12,11 +12,16 @@ minimal desktop app.
 
 ## Onboarding experience
 
-Did it build as documented?
-    
-(See the assignment for details; if everything works out of the box,
-there is no need to write much here.)
+It was easy to build and test the project. The README contains a link to an
+installation guide which states what Lektor depends on and how you install it.
+After installing those requirements, we could just start a virtual environment
+and run pip to install all dependencies needed for testing. After doing this,
+all tests passed on our systems.
 
+Lektor seems to be a project with big room for improvement in terms of test
+coverage and documentation, but there are no open issues requesting
+refactoring. Thus, we will *sadly* have to pick a different project for the
+next assignment.
 
 ## Complexity
 
