@@ -23,7 +23,7 @@ before_script:
   - python --version
   - pip list
 
-script: pytest tests
+script: pytest tests newtests
 
 notifications:
   email: false
