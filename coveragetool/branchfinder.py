@@ -41,7 +41,8 @@ class BranchFinder(ast.NodeVisitor):
         super().__init__()
         self.branches = collections.defaultdict(set)
         self._current_function = ""
-        tree = self._parse_file(os.path.abspath(filepath))
+        self.filepath = os.path.abspath(filepath)
+        tree = self._parse_file(self.filepath)
         self.visit(tree)
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
