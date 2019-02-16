@@ -38,10 +38,58 @@ is not easily possible: ten complex functions)?
 
 ### Tools
 
-Document your experience in using a "new"/different coverage tool.
+For coverage measurements, we used the excellent
+[`Coverage.py`](https://github.com/nedbat/coveragepy). It is very simple to use
+and integrates well with pretty much any Python project. The documentation is
+[similarly excellent](https://coverage.readthedocs.io/en/coverage-4.3.4/index.html).
+To run our test suite normally, we issue the following command:
 
-How well was the tool documented? Was it possible/easy/difficult to
-integrate it with your build environment?
+```bash
+$ pytest tests
+```
+To run with `Coverage` (and branch coverage), it changes to this:
+
+```bash
+$ coverage run --branch --source=lektor -m pytest tests
+```
+The `--source=lektor` part tells `Coverage` to only trace the `lektor` package.
+We were a little bit puzzled at first, because no coverage is actually emitted
+by this command alone, you have to run `coverage report` afterwards to get the
+results. Had we bothered to spend a couple of minutes reading the
+[Quick start](https://coverage.readthedocs.io/en/v4.5.x/#quick-start), that
+would not have been a problem, as it shows the correct command.
+
+```bash
+$ coverage report -m
+```
+
+The `-m` is for _missing_.  This gives a detailed report of missing statements
+and branches. The somewhat annoying thing is that it does not seem to be
+possible to show _only_ branch coverage. As branch coverage subsumes statement
+coverage, there really is little need to show both, and the output from `report`
+is fairly unreadable. There is however a way to generate a HTML report with easy
+to read coverage metrics.
+
+```bash
+$ coverage html
+```
+The document will show the source code, and will highlight unreached statements
+with red, and partially covered branching statements (i.e. one out of two
+decisions made) with yellow. Everything that is fully covere lacks highlighting.
+
+There is also a plugin for `pytest` (the test runner we use) called
+[`pytest-cov`](https://github.com/pytest-dev/pytest-cov) that runs `Coverage`
+automatically. It doesn't feature the most detailed output from the `report`
+command (with missing statements/branches), but that information is all but
+unreadable anyway. It shows coverage as a percentage and can generate the
+HTML report, which is fully sufficient. Usage with `pytest-cov` looks like this:
+
+```bash
+$ pytest tests --cov lektor --cov-branch --cov-report html
+```
+This will generate the HTML report. Overall, it is very easy to integrate
+coverage tools in a Python build environment. Part of an HTML report is shown
+in the next section, when discussing our own tool.
 
 ### DYI
 
