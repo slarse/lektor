@@ -217,6 +217,15 @@ split into a seperate function that takes the paths and extensions to look for
 and then return whatever that function returns.
 
 #### `metaformat.tokenize`
+[`metaformat.tokenize` (LINK)](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/metaformat.py#L18-L76)
+
+Almost all the complexity of this function lies in the
+[for-loop](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/metaformat.py#L46-L73).
+However, since it relies heavily on the local variables declared at the top of
+the function, refactoring this part would result in a function with a lot of
+arguments. Due to this, our conclusion is that this would not improve the code
+in terms of readability and that it would take a lot of work to make a clean
+refactoring.
 
 #### `utils.get_structur_hash._hash`
 
