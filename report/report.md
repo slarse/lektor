@@ -200,9 +200,19 @@ git diff ...
 
 ## Refactoring
 
-Plan for refactoring complex code:
+### Plans for refactoring
 
-Carried out refactoring (optional)
+#### `utils.locate_executable`
+
+#### `metaformat.tokenize`
+
+#### `utils.get_structur_hash._hash`
+
+#### `imagetools.get_image_info`
+
+#### `cli.content_file_info_cmd`
+
+### Performed refactoring
 
 git diff ...
 
