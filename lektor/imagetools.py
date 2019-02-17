@@ -347,6 +347,16 @@ def get_image_info(fp):
     if any(map(head.strip().startswith, magic_bytes)):
         return get_svg_info(fp)
 
+    fmt, width, height = _get_image_info(fp, head)
+
+    return fmt, width, height
+
+
+def _get_image_info(fp, head):
+    """Return a tuple (filetype, width, height) describing the dimensions of
+    the image open in fp. If the filetype is not one PNG, GIF or JPEG, return
+    (None, None, None).
+    """
     fmt = imghdr.what(None, head)
 
     width = None
@@ -358,63 +368,70 @@ def get_image_info(fp):
     elif fmt == "gif":
         width, height = struct.unpack("<HH", head[6:10])
     elif fmt == "jpeg":
-        # specification available under
-        # http://www.w3.org/Graphics/JPEG/itu-t81.pdf
-        # Annex B (page 31/35)
-
-        # we are looking for a SOF marker ("start of frame").
-        # skip over the "start of image" marker (imghdr took care of that).
-        fp.seek(2)
-
-        while True:
-            byte = fp.read(1)
-
-            # "All markers are assigned two-byte codes: an X’FF’ byte
-            # followed by a byte which is not equal to 0 or X’FF’."
-            if not byte or ord(byte) != 0xFF:
-                raise Exception("Malformed JPEG image.")
-
-            # "Any marker may optionally be preceded by any number
-            # of fill bytes, which are bytes assigned code X’FF’."
-            while ord(byte) == 0xFF:
-                byte = fp.read(1)
-
-            if ord(byte) not in _JPEG_SOF_MARKERS:
-                # header length parameter takes 2 bytes for all markers
-                length = struct.unpack(">H", fp.read(2))[0]
-                fp.seek(length - 2, 1)
-                continue
-
-            # else...
-            # see Figure B.3 – Frame header syntax (page 35/39) and
-            # Table B.2 – Frame header parameter sizes and values
-            # (page 36/40)
-            fp.seek(3, 1)  # skip header length and precision parameters
-            height, width = struct.unpack(">HH", fp.read(4))
-
-            if height == 0:
-                # "Value 0 indicates that the number of lines shall be
-                # defined by the DNL marker [...]"
-                #
-                # DNL is not supported by most applications,
-                # so we won't support it either.
-                raise Exception("JPEG with DNL not supported.")
-
-            break
-
-        # if the file is rotated, we want, for all intents and purposes,
-        # to return the dimensions swapped. (all client apps will display
-        # the image rotated, and any template computations are likely to want
-        # to make decisions based on the "visual", not the "real" dimensions.
-        # thumbnail code also depends on this behaviour.)
-        fp.seek(0)
-        exif = read_exif(fp)
-        if exif.is_rotated:
-            width, height = height, width
+        width, height = _get_jpeg_dimensions(fp)
     else:
         fmt = None
-
     return fmt, width, height
+
+
+def _get_jpeg_dimensions(fp):
+    """Return the width and height of a JPEG image that fp reads."""
+    # specification available under
+    # http://www.w3.org/Graphics/JPEG/itu-t81.pdf
+    # Annex B (page 31/35)
+
+    # we are looking for a SOF marker ("start of frame").
+    # skip over the "start of image" marker (imghdr took care of that).
+    fp.seek(2)
+
+    width = None
+    height = None
+    while True:
+        byte = fp.read(1)
+
+        # "All markers are assigned two-byte codes: an X’FF’ byte
+        # followed by a byte which is not equal to 0 or X’FF’."
+        if not byte or ord(byte) != 0xFF:
+            raise Exception("Malformed JPEG image.")
+
+        # "Any marker may optionally be preceded by any number
+        # of fill bytes, which are bytes assigned code X’FF’."
+        while ord(byte) == 0xFF:
+            byte = fp.read(1)
+
+        if ord(byte) not in _JPEG_SOF_MARKERS:
+            # header length parameter takes 2 bytes for all markers
+            length = struct.unpack(">H", fp.read(2))[0]
+            fp.seek(length - 2, 1)
+            continue
+
+        # else...
+        # see Figure B.3 – Frame header syntax (page 35/39) and
+        # Table B.2 – Frame header parameter sizes and values
+        # (page 36/40)
+        fp.seek(3, 1)  # skip header length and precision parameters
+        height, width = struct.unpack(">HH", fp.read(4))
+
+        if height == 0:
+            # "Value 0 indicates that the number of lines shall be
+            # defined by the DNL marker [...]"
+            #
+            # DNL is not supported by most applications,
+            # so we won't support it either.
+            raise Exception("JPEG with DNL not supported.")
+
+        break
+
+    # if the file is rotated, we want, for all intents and purposes,
+    # to return the dimensions swapped. (all client apps will display
+    # the image rotated, and any template computations are likely to want
+    # to make decisions based on the "visual", not the "real" dimensions.
+    # thumbnail code also depends on this behaviour.)
+    fp.seek(0)
+    exif = read_exif(fp)
+    if exif.is_rotated:
+        width, height = height, width
+    return width, height
 
 
 def read_exif(fp):
