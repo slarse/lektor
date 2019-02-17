@@ -209,6 +209,27 @@ git diff ...
 #### `utils.get_structur_hash._hash`
 
 #### `imagetools.get_image_info`
+[`get_image_info` (LINK)](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/imagetools.py#L323-L401)
+
+First, we can note that the function essentially performs two isolated tasks:
+
+1. Parse out the filetype ([lines 324-334](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/imagetools.py#L325-L334)).
+2. Parse out the width and height (rest of the function).
+
+Now, a part of step 1 is also an early return for SVG and XML images, which are
+handled separately, so these lines would be most practical to just keep in the
+top-level function. Step 2 is however so self-contained that it would be easy
+to put in a separate function (called maybe, `get_image_dimensions`). A large
+part of the complexity of parsing the dimensions of the images stem from
+parsing JPEG header data. Not only are there many branches because of the
+apparent complexity of JPEG header data, but the code is also littered with
+inline comments which overshadows the rest of the functionality. An obvious
+refactor step would be to simply factor out
+[lines 345-397](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/imagetools.py#L345-L397)
+into yet another separate function (maybe called `get_jpeg_info`). This would
+reduce the line count of `get_image_dimensions` considerably, and the CC as
+well. `get_jpeg_info` could then be further refactored into smaller functions,
+handling different corner cases of JPEG header data.
 
 #### `cli.content_file_info_cmd`
 
