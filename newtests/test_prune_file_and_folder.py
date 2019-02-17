@@ -6,6 +6,16 @@ from lektor.utils import prune_file_and_folder
 
 
 class TestPruneFileAndFolder:
+    """Previously tested requirements of find_files:
+        - None
+    Previously untested but now tested requirements:
+        - Does nothing given paths that are considered unsafe to delete
+        - Returns True given a path that can be pruned without encountering
+          subpaths that are considered unsafe to delete
+        - Prunes only empty folders and does not delete files in non-empty
+          folders
+    """
+
     @pytest.fixture
     def valid_file_structure(self, tmp_path):
         """Constructs a valid file structure which should make the
