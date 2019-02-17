@@ -546,7 +546,6 @@ def content_file_info_cmd(ctx, files, as_json):
     in the context of a project.  If the files are from different projects
     an error is generated.
     """
-    project = None
 
     def fail(msg):
         if as_json:
@@ -554,27 +553,49 @@ def content_file_info_cmd(ctx, files, as_json):
             sys.exit(1)
         raise click.UsageError("Could not find content file info: %s" % msg)
 
+    project = _extract_project(files, fail)
+    project_files = _extract_content_files(project, files, fail)
+    _print_content_files(project, project_files, as_json)
+
+
+def _extract_project(files, fail_callback):
+    """Return the project the files belong to.
+
+    If any two files belong to different projects, or any file does not belong
+    to any project, the fail_callback is called with an error message. It is
+    expected to cause a system exit.
+    """
+    project = None
     for filename in files:
         this_project = Project.discover(filename)
         if this_project is None:
-            fail("no project found")
+            fail_callback("no project found")
         if project is None:
             project = this_project
         elif project.project_path != this_project.project_path:
-            fail("multiple projects")
+            fail_callback("multiple projects")
 
     if project is None:
-        fail("no file indicated a project")
+        fail_callback("no file indicated a project")
 
+    return project
+
+
+def _extract_content_files(project, files, fail_callback):
+    """Extract Lector content files from the given list of files."""
     project_files = []
     for filename in files:
         content_path = project.content_path_from_filename(filename)
         if content_path is not None:
             project_files.append(content_path)
-
     if not project_files:
-        fail("no files resolve in project")
+        fail_callback("no files resolve in project")
 
+    return project_files
+
+
+def _print_content_files(project, project_files, as_json):
+    """Pretty print information about content files belonging project."""
     if as_json:
         echo_json(
             {"success": True, "project": project.to_json(), "paths": project_files}
