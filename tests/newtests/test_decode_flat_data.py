@@ -4,6 +4,16 @@ from lektor.utils import decode_flat_data
 
 
 class TestDecodeFlatData:
+    """Tests for utils.decode_flat_data
+    Previously tested requirements of decode_flat_data
+        - None
+    Previously untested but now tested requirements:
+        - Works given an empty iterator
+        - Returns a correctly structured dictionary given a valid ini data iterator
+    Untested requirements:
+        - Supports different kinds of dictionary output
+    """
+
     @pytest.fixture
     def empty_ini_data_iter(self):
         return iter([])
