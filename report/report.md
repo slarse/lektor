@@ -227,7 +227,15 @@ arguments. Due to this, our conclusion is that this would not improve the code
 in terms of readability and that it would take a lot of work to make a clean
 refactoring.
 
-#### `utils.get_structur_hash._hash`
+#### `utils.get_structure_hash._hash`
+[`utils.get_structure_hash`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L554-L582)  
+
+This function is basically a switch statement checking what type of object the
+parameter is and updating the hash accordingly. Different types of objects 
+updates the hash differently. Each case has a very simple body, making a 
+refactoring here not worth it. There is no part of the code that is reusable. 
+Changing a statement would alter the functionality. Generally speaking, switch 
+statements, or similar, are not viable for refactoring.
 
 #### `imagetools.get_image_info`
 [`get_image_info` (LINK)](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/imagetools.py#L323-L401)
