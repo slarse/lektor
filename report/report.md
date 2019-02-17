@@ -25,14 +25,81 @@ next assignment.
 
 ## Complexity
 
-1. What are your results for the ten most complex functions? (If ranking
-is not easily possible: ten complex functions)?
-   * Did all tools/methods get the same result?
-   * Are the results clear?
-2. Are the functions just complex, or also long?
-3. What is the purpose of the functions?
-4. Are exceptions taken into account in the given measurements?
-5. Is the documentation clear w.r.t. all the possible outcomes?
+Neither of us got the same results as `lizard`, and because we used slightly
+different methods for computing the CC we also got different results for most
+of the five functions we measured manually. One of us used the method presented
+in class and the other one of us used [this
+method](https://www.aivosto.com/project/help/pm-complexity.html). The
+difference is that the latter does not take the number of exits and boolean
+operators into account. Our results were as follows:
+
+| Method                                             | CC lecture | CC alternative |
+|----------------------------------------------------|------------|----------------|
+| `find_files@sourcesearch.py`                       | 5          | 4              |
+| `plugins_list_cmd@cli.py`                          | 7          | 9              |
+| `merge@utils.py`                                   | 7          | 7              |
+| `content_file_info_cmd@cli.py`                     | 11         | 11             |
+| `discover_relevant_flowblock_models@types/flow.py` | 8          | 9              |
+| `get_image_info@imagetools.py`                     | 10         | 13             |
+
+The functions we chose are of varying complexity. We also included the
+`find_files` method to show that even though it is almost 40 lines of code,
+which is longer than most of the other functions we measured, it still has a
+relatively low CC. This goes to show that high CC does not necessarily imply
+a long and complicated function.
+
+Lizard seems to count every try, except and finally as one decision each. In
+our interpretation of the lecture slides, every `try` statement counts as one
+decision no matter how many `except`’s and `finally`’s it has. In our other method,
+every `except` counts as one decision.
+
+The documentation is very lacking in all the functions we chose. Some of them
+have no documentation at all while others have a few lines explaining the
+general idea of the function, but never anything about all possible outcomes.
+None of them use proper docstrings. We also noted that the functions we chose
+from `lektor/cli.py` are mistakenly stated to return values, which is wrong
+since they only write to stdout/stderr.
+
+### Condensation graphs
+We created condensation graphs for some of the functions we chose to analyze. Here is the condensation graph we created for the function `utils.merge`
+
+![utils.merge](graphs/merge.png)
+
+A square node represents one or more statements and a diamond node represent a condition. Green arrows is the path chosen if the condition evaluates to true and red arrows is the path chosen if the condition evaluates to false. The number in each node represents the line number of which the statement/condition occurs in the original code.
+
+see [graphs](graphs/) for all condensation graphs.
+
+### Function purposes
+
+* `utils.merge`:
+Merge two lists/dictionary values together.
+
+* `metaformat.tokenize`:
+Tokenizes an iterable of newlines as bytes into key value pairs out of the lektor bulk format.  By default it will process all fields, but optionally it can skip values of uninteresting keys and will instead yield `None`. This will not perform any other processing on the data other than decoding and basic tokenizing.
+
+* `lektor.utils.decode_flat_data`:
+Decodes data from an iterator given from parsing a .ini file into a dictionary of the given dictionary type, or a regular dictionary if no argument is given.
+
+* `lektor.utils.prune_file_and_folder`:
+Takes a “name” filepath and a “base” filepath, where the latter is supposed to be a parent directory of the former. The method then repeatedly tries deleting the file or folder at the “name” filepath while walking higher up in the hierarchy until it fails, either because it reaches the “base” filepath or a non-empty subdirectory of the “base” filepath.
+
+* `lektor.cli.content_file_info_cmd`
+CLI command for printing out information about Lektor project files.
+
+* `lektor.imagetools.get_image_info`
+Utility command for parsing header info in `png`, `jpg`, `svg` and `gif` images. More specifically, given a file descriptor, it returns filetype, height and width if the image is supported. For unsupported file formats, it just returns `(None, None, None`).
+
+* `lektor.utils.get_structure_hash`:
+Given a Python structure, this generates a md5 hash. The method maps python structures to bytes which the md5 gets updated with and later digested. Not all Python types are supported, but quite a few are.
+
+* `lektor.utils.locate_executable`:
+Searches and returns the first found path to an executable file. Takes the name of the executable file to search for and current working directory.
+
+* `lektor.sourcesearch.find_files`:
+Queries a file database for all the files that satisfy some given filters (language, types, etc.). Apart from the filters, the query itself is a simple substring match of either the filename or the absolute filepath.
+
+* `lektor.types.flow.discover_relevant_flowblock_models`:
+First some terminology. A flow is just a bunch of flowblocks. It's not important to know exactly what a flowblock is, but they are basically a set of properties with a unifying name. The function will try to find and return every flowblock given a list of flowblock names and a target database. Or, if no names are provided, it will instead return all the flowblocks from the target database.
 
 ## Coverage
 
