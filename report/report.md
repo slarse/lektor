@@ -203,6 +203,18 @@ git diff ...
 ### Plans for refactoring
 
 #### `utils.locate_executable`
+[`utils.locate_executable`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L274-L309) 
+
+If the name of the executable file given as a parameter is not a path the 
+function will enter a [section](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L291-L297) 
+that resolves this by appending paths from the os environment variable $PATH as 
+choices of places to look for executables. That section could be split into a 
+seperate function and doing so will decrease the overall CC of
+`locate_executable`. Also, the [last part](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L302-L309) 
+of the function does the actual searching and before that it just listed the 
+valid paths and extensions to use in the searching. That last part could be 
+split into a seperate function that takes the paths and extensions to look for 
+and then return whatever that function returns.
 
 #### `metaformat.tokenize`
 
