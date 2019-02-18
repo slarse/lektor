@@ -20,16 +20,16 @@ from coveragetool.branchtracer import BranchTracer, func_id
 LEKTOR_DIR = Path(lektor.__file__).parent
 UTILS = LEKTOR_DIR / "utils.py"
 FLOW = LEKTOR_DIR / "types" / "flow.py"
-SOURCESEARCH = LEKTOR_DIR / "sourcesearch.py"
 METAFORMAT = LEKTOR_DIR / "metaformat.py"
 CLI = LEKTOR_DIR / "cli.py"
-FILES = [UTILS, FLOW, SOURCESEARCH, METAFORMAT, CLI]
+IMAGETOOLS = LEKTOR_DIR / "imagetools.py"
+DB = LEKTOR_DIR / "db.py"
+FILES = [UTILS, FLOW, DB, IMAGETOOLS, METAFORMAT, CLI]
 
 FUNC_IDS = [
     func_id(func, filepath)
     for func, filepath in [
         ("discover_relevant_flowblock_models", FLOW),
-        ("find_files", SOURCESEARCH),
         ("decode_flat_data", UTILS),
         ("prune_file_and_folder", UTILS),
         ("tokenize", METAFORMAT),
@@ -37,8 +37,9 @@ FUNC_IDS = [
         ("get_structure_hash", UTILS),
         ("_hash", UTILS),
         ("locate_executable", UTILS),
-        ("plugins_list_cmd", CLI),
         ("content_file_info_cmd", CLI),
+        ("coerce", DB),
+        ("get_image_info", IMAGETOOLS),
     ]
 ]
 
