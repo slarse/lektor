@@ -521,8 +521,19 @@ separate function. To further decrease the CC, one could replace the last `or`
 statements with a function call.
 
 ### Performed refactoring
+We refactored three of the functions we looked at. The PRs linked for each of
+the functions containg information about how the cyclomatic complexity was
+reduced.
 
-git diff ...
+* [`cli.content_file_info_cmd` (link to diff)](https://github.com/slarse/lektor/pull/107/commits/6584b6c20d55bca96af5d2d6ab455778254d2f85)
+    - [PR #107 contains additional information](https://github.com/slarse/lektor/pull/107)
+* [`db._CmpHelper.coerce` (link to diff)](https://github.com/slarse/lektor/pull/106/commits/5999aa8eb6519768f2fbe5cabd5ec07420bd4145)
+    - [PR #106 contains additional information](https://github.com/slarse/lektor/pull/106)
+* [`imagetools.git_image_info` (link to diff)](https://github.com/slarse/lektor/pull/92/commits/de109f139a56c952188065271efc52131e8659fc)
+    - [PR #92 contains additional information](https://github.com/slarse/lektor/pull/92)
+
+All of the refactored functions can be found on the
+[`refactor` branch](https://github.com/slarse/lektor/tree/refactor).
 
 ## Effort spent
 
