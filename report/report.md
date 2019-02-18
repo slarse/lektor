@@ -480,8 +480,6 @@ git diff ...
 
 ## Effort spent
 
-For each team member, how much time was spent in
-
 1. plenary discussions/meetings;
 
 2. discussions within parts of the group;
@@ -497,6 +495,76 @@ For each team member, how much time was spent in
 7. writing code;
 
 8. running code?
+
+### Kartik Kandavel
+1.  Most time was spent in discussions and meetings to decide the high complexity functions
+2.  4-5 hrs
+3.  2-3 hrs to read the documentation
+4.  30 min to 1 hr
+5.  1-2 hrs
+6.  Documentation consumed some good enough time (3-4 hrs maybe)
+7.  3-4 hrs
+8.  Barely any time (10 -15 mins) was needed for running the code
+
+### Lars Hummelgren
+1. Most of my time was spent here. We had a hard time figuring out exactly what
+to do because the task is spread out among the assignment description, the
+assignment grading criteria, the report template and the Canvas discussion
+forum.
+2. Also a lot of time, mainly for the same reason as above, but also some time
+to communicate about the complexity measurements.
+3. Not much, since there is very little documentation in the code.
+4. Barely any time at all.
+5. A few hours.
+6. Approximately 5 hours. Mostly for performing the complexity measurements and
+documentation of the results.
+7. A few hours.
+8. Not much, since the code and test cases run pretty fast. Definitely less than
+one hour.
+
+### Martin Nilsson
+1. Most of the time and effort. Big part of it trying to figure what exactly
+needs to be done.
+2. Barely any.
+3. An hour maybe to read about lektor flows.
+4. None.
+5. A solid day and some.
+6. A few hours.
+7. A few hours.
+8. Barely any.
+
+### Rouwayd Hanna
+1. Many hours here. At first, we needed to put in some hours to decide project
+and choose the ten functions. After that, the functions and workload had to be
+delegated. Also, lots of time was spent on trying to figure out what exactly
+needed to be done as the criteria was scattered  and unclear.
+2. Couple of hours here. This relates to the hours put in meetings and so on.
+There were parts of the assignment that needed cooperation between parts of the
+group, for example manual calculation of high cc functions, that required
+discussions.
+3. Barely one hour. Only needed for writing the purpose part of the report.
+4. None, it was easy to configure and build
+5. One or two hours. Needed for identifying testing requirements and branches
+that increased the complexity.
+6. 4-5 hours. Most of which were spent documenting the complexity of 5 of the
+functions with high CC. Also for drawing condensation graphs and analyzing the
+results.
+7. A few hours, mostly for testing.
+8. Not much time, since the code runs fast.
+
+### Simon Larsén
+1. Many hours. The instructions were a great source of confusion, and really
+need to be looked over.
+2. A few hours.
+3. A few hours.
+4. An hour or so resolving some issues with the Lektor Travis build (some
+resources the original repo used were unavailable to us).
+5. Way too much time when implementing the coverage tool. But that's my own
+fault for underestimating the task's difficulty by a truckload (and then some).
+6. It feels like a lot of time, but I haven't kept count.
+7. A lot of time, again, because the coverage tool was harder to implement than
+I had estimated.
+8. I have no idea.
 
 ## Overall experience
 
