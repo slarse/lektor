@@ -270,17 +270,17 @@ git diff ...
 ### Plans for refactoring
 
 #### `utils.locate_executable`
-[`utils.locate_executable`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L274-L309) 
+[`utils.locate_executable`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L274-L309)
 
-If the name of the executable file given as a parameter is not a path the 
-function will enter a [section](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L291-L297) 
-that resolves this by appending paths from the os environment variable $PATH as 
-choices of places to look for executables. That section could be split into a 
+If the name of the executable file given as a parameter is not a path the
+function will enter a [section](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L291-L297)
+that resolves this by appending paths from the os environment variable $PATH as
+choices of places to look for executables. That section could be split into a
 seperate function and doing so will decrease the overall CC of
-`locate_executable`. Also, the [last part](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L302-L309) 
-of the function does the actual searching and before that it just listed the 
-valid paths and extensions to use in the searching. That last part could be 
-split into a seperate function that takes the paths and extensions to look for 
+`locate_executable`. Also, the [last part](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L302-L309)
+of the function does the actual searching and before that it just listed the
+valid paths and extensions to use in the searching. That last part could be
+split into a seperate function that takes the paths and extensions to look for
 and then return whatever that function returns.
 
 #### `metaformat.tokenize`
@@ -298,10 +298,10 @@ refactoring.
 [`utils.get_structure_hash`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L554-L582)  
 
 This function is basically a switch statement checking what type of object the
-parameter is and updating the hash accordingly. Different types of objects 
-updates the hash differently. Each case has a very simple body, making a 
-refactoring here not worth it. There is no part of the code that is reusable. 
-Changing a statement would alter the functionality. Generally speaking, switch 
+parameter is and updating the hash accordingly. Different types of objects
+updates the hash differently. Each case has a very simple body, making a
+refactoring here not worth it. There is no part of the code that is reusable.
+Changing a statement would alter the functionality. Generally speaking, switch
 statements, or similar, are not viable for refactoring.
 
 #### `imagetools.get_image_info`
@@ -327,7 +327,17 @@ reduce the line count of `get_image_dimensions` considerably, and the CC as
 well. `get_jpeg_info` could then be further refactored into smaller functions,
 handling different corner cases of JPEG header data.
 
-#### `cli.content_file_info_cmd`
+#### `db.coerce`
+[`db.coerce` (LINK)](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/db.py#L110-L131)
+
+This function is used to convert the variables to a form which allows them to
+be compared. All the outer if-statements contain code for handling specific
+combinations of types. The first two seem a bit small to split into separate
+functions, since they almost contain no logic. [The third
+if-statement](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/db.py#L115-L120)
+can be split into a separate method and the last two could be placed in a
+separate function. To further decrease the CC, one could replace the last `or`
+statements with a function call.
 
 ### Performed refactoring
 
