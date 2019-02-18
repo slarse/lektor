@@ -16,7 +16,21 @@ def contents_file(project_root):
 class TestContentFileInfoCmd:
     """Tests for lektor.cli.content_file_info_cmd.
 
-    This function was untested in the initial test suite.
+    The function takes a bunch of filepaths and prints out some Lektor-related info
+    about them. A pre-condition is that all files are from the same Lektor-project.
+
+    This function was entirely untested in the initial test suite.
+
+    Previously untested requirements:
+
+    * Print error and exit if files are frome different projects.
+    * Print error and exit if no files are provided.
+    * Print error and exit if any of the files is not related to a Lektor project.
+    * Print error and exit if none of the files are content files.
+    * Print information about each content file.
+    * All of the above requirements, but with output as JSON.
+
+    Requirements tested by this suite is specified in each of the test methods.
     """
 
     CMD = "content-file-info"
