@@ -36,7 +36,7 @@ operators into account. Our results were as follows:
 | Method                                             | CC lecture | CC alternative |
 |----------------------------------------------------|------------|----------------|
 | `find_files@sourcesearch.py`                       | 5          | 4              |
-| `plugins_list_cmd@cli.py`                          | 7          | 9              |
+| `coerce@db.py`                                     | 9          | 10             |
 | `merge@utils.py`                                   | 7          | 7              |
 | `content_file_info_cmd@cli.py`                     | 11         | 11             |
 | `discover_relevant_flowblock_models@types/flow.py` | 8          | 9              |
@@ -95,8 +95,10 @@ Given a Python structure, this generates a md5 hash. The method maps python stru
 * `lektor.utils.locate_executable`:
 Searches and returns the first found path to an executable file. Takes the name of the executable file to search for and current working directory.
 
-* `lektor.sourcesearch.find_files`:
-Queries a file database for all the files that satisfy some given filters (language, types, etc.). Apart from the filters, the query itself is a simple substring match of either the filename or the absolute filepath.
+* `lektor.db.coerce`:
+Takes two parameters _a_ and _b_ and coerces them to be comparable. Comparable
+in this case means having the same type or one of them being `None`. For example
+if a is an `int` and b is a `float`, this method makes b an `int`.
 
 * `lektor.types.flow.discover_relevant_flowblock_models`:
 First some terminology. A flow is just a bunch of flowblocks. It's not important to know exactly what a flowblock is, but they are basically a set of properties with a unifying name. The function will try to find and return every flowblock given a list of flowblock names and a target database. Or, if no names are provided, it will instead return all the flowblocks from the target database.
@@ -270,17 +272,17 @@ git diff ...
 ### Plans for refactoring
 
 #### `utils.locate_executable`
-[`utils.locate_executable`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L274-L309) 
+[`utils.locate_executable`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L274-L309)
 
-If the name of the executable file given as a parameter is not a path the 
-function will enter a [section](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L291-L297) 
-that resolves this by appending paths from the os environment variable $PATH as 
-choices of places to look for executables. That section could be split into a 
+If the name of the executable file given as a parameter is not a path the
+function will enter a [section](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L291-L297)
+that resolves this by appending paths from the os environment variable $PATH as
+choices of places to look for executables. That section could be split into a
 seperate function and doing so will decrease the overall CC of
-`locate_executable`. Also, the [last part](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L302-L309) 
-of the function does the actual searching and before that it just listed the 
-valid paths and extensions to use in the searching. That last part could be 
-split into a seperate function that takes the paths and extensions to look for 
+`locate_executable`. Also, the [last part](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L302-L309)
+of the function does the actual searching and before that it just listed the
+valid paths and extensions to use in the searching. That last part could be
+split into a seperate function that takes the paths and extensions to look for
 and then return whatever that function returns.
 
 #### `metaformat.tokenize`
@@ -298,10 +300,10 @@ refactoring.
 [`utils.get_structure_hash`](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/utils.py#L554-L582)  
 
 This function is basically a switch statement checking what type of object the
-parameter is and updating the hash accordingly. Different types of objects 
-updates the hash differently. Each case has a very simple body, making a 
-refactoring here not worth it. There is no part of the code that is reusable. 
-Changing a statement would alter the functionality. Generally speaking, switch 
+parameter is and updating the hash accordingly. Different types of objects
+updates the hash differently. Each case has a very simple body, making a
+refactoring here not worth it. There is no part of the code that is reusable.
+Changing a statement would alter the functionality. Generally speaking, switch
 statements, or similar, are not viable for refactoring.
 
 #### `imagetools.get_image_info`
