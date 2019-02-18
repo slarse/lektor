@@ -69,7 +69,9 @@ A square node represents one or more statements and a diamond node represent a c
 
 see [graphs](graphs/) for all condensation graphs.
 
-### Function purposes
+## Function purposes
+
+### Purpose and reason for high complexity
 
 * `utils.merge`:
 Merge two lists/dictionary values together.
@@ -102,6 +104,115 @@ if a is an `int` and b is a `float`, this method makes b an `int`.
 
 * `lektor.types.flow.discover_relevant_flowblock_models`:
 First some terminology. A flow is just a bunch of flowblocks. It's not important to know exactly what a flowblock is, but they are basically a set of properties with a unifying name. The function will try to find and return every flowblock given a list of flowblock names and a target database. Or, if no names are provided, it will instead return all the flowblocks from the target database.
+
+### Outcomes resulting in different branches
+
+* `utils.merge`:
+Merges two lists/dictionary values together.
+Based on parameters and their datatype the branching occurs,
+if parameter 1 is none then parameter 2 is the output and vice-versa.
+For lists merging happens in a different branch and for dictionary merging
+happens in another branch
+
+* `metaformat.tokenize`:
+tokenizes an iterable of newlines as bytes into key value
+pairs out of the lektor bulk format.
+In this function, initial branching occurs based on encoding value, if encoding
+is None then the input is not decoded.
+After that based on the key value the branching occurs, if key is has some
+value, based on that filtering is done on iterable data and filtered data is
+provided as output.
+
+* `lektor.utils.decode_flat_data`:
+A for each loop runs for every entry in the given iterator over tuples of keys
+and values. Then the method attempts to split the key into parts (this is
+performed in an inner function); if this does not work, the funciton skips to
+the next iteration. Otherwise, the function iterates over each of these key
+parts separately where the container is converted. Finally, the container is
+converted into a dictionary of the type specified as an parameter to the
+function.
+
+* `lektor.utils.prune_file_and_folder`:
+If the name is considered unsafe with the given base, then the method
+immediately returns False. Otherwise, it continues by attempting to delete the
+given name as a file. If this fails, it attempts to remove the directory
+instead. Should this fail, the method fails and returns False. If it does not,
+the method will split up the name to get the path and the topmost folder of that
+path. If the topmost folder of that path is empty, the split is repeated. Then
+the while loop runs as long as the name of the topmost folder is not empty,
+attempting to delete its parent folder. This continues until an unsafe folder is
+encountered based on the given base directory path, in which case the method
+returns false, or until a directory cannot be deleted, for example because it is
+not empty. In the later case, the function breaks out of the while-loop and
+returns True.
+
+* `lektor.cli.content_file_info_cmd`
+This is a CLI command that prints out information about Lektor content files. It
+operates in four distinct steps:
+
+1. Define a `fail` function that prints an error message and then causes a
+   system exit.
+2. Extract the related Lektor project.
+    - If any file is not related to a Lektor project, fail!
+    - If any two files are related to different Lektor projects, fail!
+    - If no project is found (i.e. there were no files at all), fail!
+3. Extract actual content files. For every file, if it is a content file, add it
+to a list.
+4. Print non-error results for all of the content files found in step 3.
+
+All of the printing (including the `fail` function's error messages) can also be
+formatted as json if the `as_json` variable is set.
+
+* `lektor.imagetools.get_image_info`
+This function tries to extract filetype, width and height from an image file. It
+starts by reading 32 bytes from the header, and returns early if the header is
+too short. Then there is another early return if it finds that the file is
+either an `SVG` or `XML` file, which is delegated to a separate function called
+`get_svg_info`. The rest of the function handles `PNG`, `GIF` and `JPEG` with
+one branch each, and has a catch-all that just causes all return values to be
+set to none at the end. `PNG` and `GIF` are fairly trivial to parse, but `JPEG`
+contains a whole lot of branching for different types of header information. The
+function will also raise if the `JPEG` is malformed or uses the unsupported
+`DNL` (define number of lines) header. Finally, the image `JPEG` is checked for
+rotation, which (if true) causes the width and height values to be swapped with
+each other.
+
+* `lektor.utils.get_structure_hash`:
+Given a Python structure this function generates a hash. Each different python
+structure has its own branch where the hash is updated accordingly and thus
+affect the outcome. It supports 10 different python structures. The default
+branch is taken when given a python structure that is not supported, which will
+return an empty hash
+
+* `lektor.utils.locate_executable`:
+This function tries to locate the path to an executable. The actual searching is
+the default branch since it is always executed. However, before the searching,
+the function finds the valid paths and extensions to use in the searching. What
+places to look for depends on varying things, such as whether the parameter is a
+file name or a path and what os is used. Appending relevant paths results in the
+many branches of the function (CC=20). Basically, using different places to look
+for an executable will affect the outcome of the function.
+
+* `lektor.db.coerce`:
+If the arguments are of the same type, they are already comparable and therefore
+returned without modification. Any arguments that are Undefined are changed to
+None. If both the arguments are strings, they are both normalized according to
+the function `utils.sort_normalize_string` to standardize any string
+comparisons. If either argument is a number, the function tries to convert the
+other into a number of the same type. If this is not possible, eg. because of
+overflow issues or because the other argument can't be interpreted as a number,
+then the input is returned without modification.
+
+* `lektor.types.flow.discover_relevant_flowblock_models`:
+In the special case where no flow names are provided, the function immediately
+returns all the flowblocks in the database, resulting in a terminal branch. The
+other branching outcomes happen inside the processing loop, wherein each flow
+name is used to query a flowblock to add to the result. The flow name is skipped
+if there already is a flowblock with that name in the result, or if a flowblock
+of that name doesn't exist in the database. Finally, note that flowblocks can be
+nested, meaning a flowblock can contain a collection of flowblocks. If an
+encountered flowblock is marked as nested, but doesn't contain any flowblocks,
+then an error is raised. Otherwise, the inner flowblocks are also processed.
 
 ## Coverage
 
