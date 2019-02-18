@@ -36,7 +36,7 @@ operators into account. Our results were as follows:
 | Method                                             | CC lecture | CC alternative |
 |----------------------------------------------------|------------|----------------|
 | `find_files@sourcesearch.py`                       | 5          | 4              |
-| `plugins_list_cmd@cli.py`                          | 7          | 9              |
+| `coerce@db.py`                                     | 9          | 10             |
 | `merge@utils.py`                                   | 7          | 7              |
 | `content_file_info_cmd@cli.py`                     | 11         | 11             |
 | `discover_relevant_flowblock_models@types/flow.py` | 8          | 9              |
@@ -95,8 +95,10 @@ Given a Python structure, this generates a md5 hash. The method maps python stru
 * `lektor.utils.locate_executable`:
 Searches and returns the first found path to an executable file. Takes the name of the executable file to search for and current working directory.
 
-* `lektor.sourcesearch.find_files`:
-Queries a file database for all the files that satisfy some given filters (language, types, etc.). Apart from the filters, the query itself is a simple substring match of either the filename or the absolute filepath.
+* `lektor.db.coerce`:
+Takes two parameters _a_ and _b_ and coerces them to be comparable. Comparable
+in this case means having the same type or one of them being `None`. For example
+if a is an `int` and b is a `float`, this method makes b an `int`.
 
 * `lektor.types.flow.discover_relevant_flowblock_models`:
 First some terminology. A flow is just a bunch of flowblocks. It's not important to know exactly what a flowblock is, but they are basically a set of properties with a unifying name. The function will try to find and return every flowblock given a list of flowblock names and a target database. Or, if no names are provided, it will instead return all the flowblocks from the target database.
