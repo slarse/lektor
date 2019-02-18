@@ -270,21 +270,21 @@ def increment_filename(filename):
     return rv
 
 
-@lru_cache(maxsize=None)
+
 def locate_executable(exe_file, cwd=None, include_bundle_path=True):
     """Locates an executable in the search path."""
     choices = [exe_file]
     resolve = True
 
     # If it's already a path, we don't resolve.
-    if os.path.sep in exe_file or \
-       (os.path.altsep and os.path.altsep in exe_file):
+    if os.path.sep in exe_file or (os.path.altsep and os.path.altsep in exe_file):
+
         resolve = False
 
     extensions = os.environ.get('PATHEXT', '').split(';')
     _, ext = os.path.splitext(exe_file)
-    if os.name != 'nt' and '' not in extensions or \
-       any(ext.lower() == extension.lower() for extension in extensions):
+    if os.name != 'nt' and '' not in extensions or any(ext.lower() == extension.lower() for extension in extensions):
+
         extensions.insert(0, '')
 
     if resolve:
