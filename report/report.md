@@ -412,13 +412,17 @@ happy with it.
 
 ### Evaluation
 
-Report of old coverage: [link]
+The old coverage report can be found in the
+[report/before](https://github.com/slarse/lektor/tree/report/report/before)
+directory and the new one in the
+[report/after](https://github.com/slarse/lektor/tree/report/report/after)
+directory. To view the reports, clone the repository and checkout to the
+`report` branch. Then open one of the folders above and open the `index.html`
+file found inside each of the directories above in a web browser.
 
-Report of new coverage: [link]
-
-Test cases added:
-
-git diff ...
+Our newly added test cases can be found in the `testing` branch in the
+[tests/newtests](https://github.com/slarse/lektor/tree/testing/tests/newtests)
+directory.
 
 ## Refactoring
 
