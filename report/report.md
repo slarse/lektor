@@ -33,14 +33,14 @@ method](https://www.aivosto.com/project/help/pm-complexity.html). The
 difference is that the latter does not take the number of exits and boolean
 operators into account. Our results were as follows:
 
-| Method                                             | CC lecture | CC alternative |
-|----------------------------------------------------|------------|----------------|
-| `find_files@sourcesearch.py`                       | 5          | 4              |
-| `coerce@db.py`                                     | 9          | 10             |
-| `merge@utils.py`                                   | 7          | 7              |
-| `content_file_info_cmd@cli.py`                     | 11         | 11             |
-| `discover_relevant_flowblock_models@types/flow.py` | 8          | 9              |
-| `get_image_info@imagetools.py`                     | 10         | 13             |
+| Method                                             | CC lecture | CC alternative | CC Lizard |
+|----------------------------------------------------|------------|----------------|-----------|
+| `find_files@sourcesearch.py`                       | 5          | 4              | 5         |
+| `coerce@db.py`                                     | 9          | 10             | 14        |
+| `merge@utils.py`                                   | 7          | 7              | 10        |
+| `content_file_info_cmd@cli.py`                     | 11         | 11             | 11        |
+| `discover_relevant_flowblock_models@types/flow.py` | 8          | 9              | 10        |
+| `get_image_info@imagetools.py`                     | 10         | 13             | 14        |
 
 The functions we chose are of varying complexity. We also included the
 `find_files` method to show that even though it is almost 40 lines of code,
@@ -73,7 +73,7 @@ see [graphs](graphs/) for all condensation graphs.
 
 ### Purpose and reason for high complexity
 
-* `utils.merge`:
+* `lektor.utils.merge` **CC=10**:
 Merge two lists/dictionary values together.
 
   Complexity of this function is high because, branching is happening based on
@@ -82,7 +82,7 @@ input the merge function complexity changes. Merge function is handling lists
 and dictionary data types and that makes the complexity high because branching
 is required to handle both data types.
 
-* `metaformat.tokenize`:
+* `lektor.metaformat.tokenize` **CC=15**:
 Tokenizes an iterable of newlines as bytes into key value pairs out of the
 lektor bulk format. By default it will process all fields, but optionally it
 can skip values of uninteresting keys and will instead yield `None`. This will
@@ -96,14 +96,14 @@ makes the function complex. Tokenize also makes function calls to
 complexity. This high complexity is required so that tokenize function can
 handle different type of data with filtering
 
-* `lektor.utils.decode_flat_data`:
+* `lektor.utils.decode_flat_data` **CC=10**:
 Decodes data from an iterator given from parsing a .ini file into a dictionary
 of the given dictionary type, or a regular dictionary if no argument is given.
 
   This function is already divided into a few inner functions. It still has a
 high CC, and it seems like it would be hard to decrease it further without a major refactoring.
 
-* `lektor.utils.prune_file_and_folder`:
+* `lektor.utils.prune_file_and_folder` **CC=9**:
 Takes a “name” filepath and a “base” filepath, where the latter is supposed to
 be a parent directory of the former. The method then repeatedly tries deleting
 the file or folder at the “name” filepath while walking higher up in the
@@ -114,49 +114,49 @@ non-empty subdirectory of the “base” filepath.
 several functions.
 
 
-* `lektor.cli.content_file_info_cmd`
+* `lektor.cli.content_file_info_cmd` **CC=11**:
 CLI command for printing out information about Lektor project files.
 
   This is yet another function that is doing too many things. It essentially has four disconnected steps that can easily be factored out. There is both a refactor plan, and an actual refactor of it, so there is little value in writing more about it here.
 
-* `lektor.imagetools.get_image_info`
+* `lektor.imagetools.get_image_info` **CC=14**:
 Utility command for parsing header info in `png`, `jpg`, `svg` and `gif` images. More specifically, given a file descriptor, it returns filetype, height and width if the image is supported. For unsupported file formats, it just returns `(None, None, None`).
 
   This function really has no business being this complex (CC=14). It is entirely dominated both in terms of line count and CC by parsing the `JPEG` header info, which can just as easily be put into its own function. This is one of the functions that we chose to refactor, and with little effort we broke it into three functions with CCs if 3, 5 and 8.
 
-* `lektor.utils.get_structure_hash`:
+* `lektor.utils.get_structure_hash` **CC=14**:
 Given a Python structure, this generates a md5 hash. The method maps python structures to bytes which the md5 gets updated with and later digested. Not all Python types are supported, but quite a few are.
 
   This function essentially calls another function `_hash` defined inside it doing all the work. In fact, `get_structure_hash` has a CC of 1 but all it does is call `_hash` and return whatever it returns. If the inside function was included, `utils.get_structure_hash` has a high CC of 14, which is plausible since `_hash` contains 10 if statements and 3 loops. This means a lot of decision making and branching. This function is as complex as it needs to be. Refactoring would be unviable since it consists of lots of if statements doing atomic work.
 
 
-* `lektor.utils.locate_executable`:
+* `lektor.utils.locate_executable` **CC=20**:
 Searches and returns the first found path to an executable file. Takes the name of the executable file to search for and current working directory.
 
   The function's purpose sounds simple enough but there are some factors involved in deciding where to look for that executable and what extensions to use, for example whether the given parameter is a name of an executable or a path. These come with some decision making and looping, which increase the complexity and make it the most complex function in the project. This function is way more complex than it needs to be. The actual locating isn't that complex but the part that leads to the searching is. Therefore that part of the function could be split into seperate functions, hence decreasing the overall complexity.
 
-* `lektor.db.coerce`:
+* `lektor.db.coerce` **CC=14**:
 Takes two parameters _a_ and _b_ and coerces them to be comparable. Comparable
 in this case means having the same type or one of them being `None`. For example
 if a is an `int` and b is a `float`, this method makes b an `int`.
 
   This function is probably as complex as it needs to be. It attempts to coerce two values such that they are comparable, which necessarily involves handling a lot of cases. Further, it's a specialist function that doesn't try to do anything else. Maybe there's a cooler way of doing it.
 
-* `lektor.types.flow.discover_relevant_flowblock_models`:
+* `lektor.types.flow.discover_relevant_flowblock_models` **CC=10**:
 First some terminology. A flow is just a bunch of flowblocks. It's not important to know exactly what a flowblock is, but they are basically a set of properties with a unifying name. The function will try to find and return every flowblock given a list of flowblock names and a target database. Or, if no names are provided, it will instead return all the flowblocks from the target database.
 
   This function appears just a little too complex for its purpose for two reasons. One, querying for all the flowblocks instead of a subset results in a completely separate branch from a normal query, resulting in some minimal code duplication. Two, the special case handling of nested flowblocks alone results in an increased CC of 4, but this is a trivially separable function.
 
 ### Outcomes resulting in different branches
 
-* `utils.merge`:
+* `lektor.utils.merge`:
 Merges two lists/dictionary values together.
 Based on parameters and their datatype the branching occurs,
 if parameter 1 is none then parameter 2 is the output and vice-versa.
 For lists merging happens in a different branch and for dictionary merging
 happens in another branch
 
-* `metaformat.tokenize`:
+* `lektor.metaformat.tokenize`:
 tokenizes an iterable of newlines as bytes into key value
 pairs out of the lektor bulk format.
 In this function, initial branching occurs based on encoding value, if encoding
