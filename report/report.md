@@ -609,7 +609,12 @@ I had estimated.
 8. I have no idea.
 
 ## Overall experience
+One major takeaway is that implementing coverage metrics in python is not as easy as it can seem.
 
-What are your main take-aways from this project? What did you learn?
+Most of us take away a wider perspective on the concept of code complexity. Before this assignment, we hadn't worked much with cyclomatic complexity in particular, so obviously we have a much better sense now of what exactly "high CC" means numerically, and what a high-CC function looks like. But more generally, reasoning about CC has helped train us in better using function complexity as a heuristic for good code, rather than just, eg., the line count of the function. I have personally reconsidered a few coding conventions.
 
-Is there something special you want to mention here?
+We realize also that CC can be misleading. There are a few obvious considerations. First, some functions need high-ish CC and even very bulky functions can have low CC. Second, there are various ways to artificially lower the CC, even inadvertently, without really reducing the complexity at all.
+
+Another main takeaway for those of us not keyed into the open source scene is that even somewhat respectable repos can be internally poorly documented and slipshod.
+
+Not all takeaways are positive, unfortunately. Most of us take away frustration with the assignment structure: there are multiple, vaguely conflicting sources of information, between the running assignment text, the assignment grading criteria, the report template, and the canvas discussion forum. We believe it would be best if there was a single, authoritative source of information, with the others merely acting as various summaries. For example, it would have been easier to plan our work if the report template merely summarized what needed to be done as described in the assignment text. As is, the report template contains novel subassignments and extra implicit work.
