@@ -329,6 +329,28 @@ reduce the line count of `get_image_dimensions` considerably, and the CC as
 well. `get_jpeg_info` could then be further refactored into smaller functions,
 handling different corner cases of JPEG header data.
 
+#### `cli.content_file_info_cmd`
+[`content_file_info_cmd` (LINK)](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/cli.py#L426-L479)
+
+This function is a CLI command to print information about Lektor project files.
+We can note that it performs several distinct tasks:
+
+1. Define a `fail` function that prints an error message and then causes a
+   system exit ([lines 439-443](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/cli.py#L439-L443)).
+2. Extract the related Lektor project.
+   ([lines 445-452](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/cli.py#L445-L455)).
+    - This includes verifying that all files are related to the the same project.
+3. Extract actual content files ([lines 457-464](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/cli.py#L457-L464))
+4. Print non-error results ([lines 466-472](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/cli.py#L466-L479))
+
+This is almost trivial to split into smaller parts: simply extract each of the
+steps into different functions. Steps 2-3 require the `fail` function defined
+in step 1, which could be provided either as a callback, or simply defining
+`fail` as a standalone function. The remaining dependencies between steps
+are easily resolved. Step 3 requires the project from step 2, and step 4
+requires both the project from step 2 and the content files from step 3, but
+that's pretty much it.
+
 #### `db.coerce`
 [`db.coerce` (LINK)](https://github.com/slarse/lektor/blob/3d82277a04d2e40fdc8b7dce451c9201c5362c9c/lektor/db.py#L110-L131)
 
