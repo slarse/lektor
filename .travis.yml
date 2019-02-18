@@ -5,6 +5,7 @@ branches:
   - master
   - testing
   - tooling
+  - refactor
 
 matrix:
   include:
